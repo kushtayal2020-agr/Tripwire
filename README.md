@@ -30,9 +30,7 @@ python -m demo.agent_demo --ollama    # real local model: ollama pull qwen2.5:3b
 ## Demo
 A "summarise this page" agent reads a page with hidden text telling it to email private notes to an attacker.
 - **Tripwire OFF:** the agent sends the email.
-- **Tripwire ON:** the page is quarantined, the email is never sent, and the event is logged.
-
-Demo video: _add link here_
+- **Tripwire ON:** the page is quarantined, the email is never sent, and the event is logged. Run `python -m demo.agent_demo` to reproduce this offline; no hosted video is currently available.
 
 ## Results
 Measured on our own test set (`eval/testset.csv`, includes Hindi/Hinglish and tricky benign look-alikes). Full lists of misses and false positives are in [eval/RESULTS.md](eval/RESULTS.md).
@@ -42,8 +40,8 @@ Measured on our own test set (`eval/testset.csv`, includes Hindi/Hinglish and tr
 | keyword-only | All | 30 | 28 | 7% | 0% |
 | keyword-only | English | 19 | 18 | 11% | 0% |
 | keyword-only | Hindi/Hinglish | 11 | 10 | 0% | 0% |
-| heuristics | All | 30 | 28 | 77% | 14% |
-| heuristics | English | 19 | 18 | 74% | 17% |
+| heuristics | All | 30 | 28 | 80% | 14% |
+| heuristics | English | 19 | 18 | 79% | 17% |
 | heuristics | Hindi/Hinglish | 11 | 10 | 82% | 10% |
 
 ## Limitations
@@ -65,8 +63,8 @@ docs/          threat model
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Team
-Detection: @member-a | Harness: @member-b | Skill, eval, docs: @kushtayal2020-agr
+## Maintainers
+See the [repository contributors](https://github.com/kushtayal2020-agr/Tripwire/graphs/contributors).
 
 ## License
 MIT
