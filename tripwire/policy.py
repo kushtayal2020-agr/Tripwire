@@ -24,7 +24,8 @@ class Policy:
         log_path: str = "tripwire_blocked.log",
         extra_risky_tools: set[str] | None = None,
     ):
-        assert mode in ("block", "confirm")
+        if mode not in ("block", "confirm"):
+            raise ValueError("mode must be 'block' or 'confirm'")
         self.mode, self.log_path = mode, log_path
         self.risky_tools = RISKY_TOOLS | (extra_risky_tools or set())
 
@@ -34,7 +35,9 @@ class Policy:
         if not tainted:
             return Decision(True, "risky tool, but no untrusted content in context")
         if self.mode == "confirm":
-            ok = input(f"[Tripwire] Untrusted content in context. Allow {tool}({args})? [y/N] ").lower() == "y"
+            ok = input(
+                f"[Tripwire] Untrusted content in context. Allow {tool}({args})? [y/N] "
+            ).strip().lower() == "y"
             d = Decision(ok, "user confirmed" if ok else "user denied")
         else:
             d = Decision(False, f"{tool} blocked: request traces back to untrusted content")
