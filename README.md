@@ -25,7 +25,16 @@ python -m pytest                      # unit tests
 python -m eval.run_eval --markdown    # evaluation table
 python -m demo.agent_demo             # attack demo (offline mock model)
 python -m demo.agent_demo --ollama    # real local model: ollama pull qwen2.5:3b
+python -m tripwire.web                # local web interface at http://127.0.0.1:8000
 ```
+
+## Web interface
+Start the local-only frontend with `python -m tripwire.web`, then open
+`http://127.0.0.1:8000` in your browser. Paste content or choose a text/HTML file
+to scan it with Tripwire's heuristic rules. The server binds only to localhost,
+accepts scan requests up to 1 MB, and does not send content to an external service.
+Press `Ctrl+C` in the terminal to stop it. The web interface uses rules-only
+scanning; the optional classifier remains available through the CLI and library.
 
 ## Demo
 A "summarise this page" agent reads a page with hidden text telling it to email private notes to an attacker.
@@ -53,6 +62,7 @@ Measured on our own test set (`eval/testset.csv`, includes Hindi/Hinglish and tr
 ## Repo layout
 ```
 tripwire/      detection + policy + agent loop
+               local web interface (`python -m tripwire.web`)
 skill/         Agent Skill (tripwire-guard)
 eval/          test set and evaluation script
 demo/          attack demo
