@@ -18,12 +18,18 @@ class Decision:
 
 
 class Policy:
-    def __init__(self, mode: str = "block", log_path: str = "tripwire_blocked.log"):
+    def __init__(
+        self,
+        mode: str = "block",
+        log_path: str = "tripwire_blocked.log",
+        extra_risky_tools: set[str] | None = None,
+    ):
         assert mode in ("block", "confirm")
         self.mode, self.log_path = mode, log_path
+        self.risky_tools = RISKY_TOOLS | (extra_risky_tools or set())
 
     def check(self, tool: str, args: dict, tainted: bool) -> Decision:
-        if tool not in RISKY_TOOLS:
+        if tool not in self.risky_tools:
             return Decision(True, "safe tool")
         if not tainted:
             return Decision(True, "risky tool, but no untrusted content in context")
