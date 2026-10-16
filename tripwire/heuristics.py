@@ -1,6 +1,8 @@
 """Layer 1: fast rule-based checks (English, Hinglish, Hindi, hidden content)."""
 import re
 
+from .normalize import normalize
+
 F = re.IGNORECASE | re.DOTALL
 
 PATTERNS = [
@@ -29,6 +31,13 @@ BASE64_BLOB = re.compile(r"[A-Za-z0-9+/]{80,}={0,2}")
 def check(text: str) -> list[str]:
     """Return the list of rule names that matched (empty list = clean)."""
     hits = [name for name, rx in COMPILED if rx.search(text)]
+    normalized = normalize(text)
+    if normalized != text:
+        hits.extend(
+            f"obfuscated:{name}"
+            for name, rx in COMPILED
+            if rx.search(normalized) and name not in hits
+        )
     if len(HIDDEN_UNICODE.findall(text)) >= 3:
         hits.append("hidden_unicode")
     if HIDDEN_HTML.search(text):
