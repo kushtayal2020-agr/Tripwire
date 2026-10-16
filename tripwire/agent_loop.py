@@ -40,11 +40,17 @@ class NaiveMockLLM:
 
 
 def parse_action(text: str) -> dict:
-    m = re.search(r"\{.*\}", text, re.DOTALL)
-    try:
-        return json.loads(m.group(0)) if m else {"final": text}
-    except json.JSONDecodeError:
-        return {"final": text}
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(text):
+        if char != "{":
+            continue
+        try:
+            action, _ = decoder.raw_decode(text[index:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(action, dict):
+            return action
+    return {"final": text}
 
 
 class Agent:
