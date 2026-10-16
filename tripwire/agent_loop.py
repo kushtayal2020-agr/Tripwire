@@ -49,7 +49,15 @@ def parse_action(text: str) -> dict:
         except json.JSONDecodeError:
             continue
         if isinstance(action, dict):
-            return action
+            if "final" in action:
+                if len(action) != 1 or not isinstance(action["final"], str):
+                    raise ValueError("model final action must contain only a string 'final' value")
+                return action
+            tool = action.get("tool")
+            args = action.get("args", {})
+            if not isinstance(tool, str) or not tool.strip() or not isinstance(args, dict):
+                raise ValueError("model tool action must have a non-empty 'tool' and object 'args'")
+            return {"tool": tool, "args": args}
     return {"final": text}
 
 
