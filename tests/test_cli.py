@@ -11,7 +11,12 @@ def test_json_output_for_text_input():
         text=True,
     )
     assert result.returncode == 1
-    assert json.loads(result.stdout)["verdict"] == "injection"
+    payload = json.loads(result.stdout)
+    assert payload["verdict"] == "injection"
+    assert payload["score"] == 1.0
+    assert "en_ignore_instructions" in payload["reasons"]
+    assert set(payload) == {"verdict", "score", "reasons"}
+    assert result.stderr == ""
 
 
 def test_no_classifier_flag_scans_benign_text():

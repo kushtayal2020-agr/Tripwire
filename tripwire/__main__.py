@@ -29,7 +29,6 @@ def main() -> int:
             "verdict": result.verdict,
             "score": result.score,
             "reasons": result.reasons,
-            "notes": result.notes,
         }))
     else:
         print(f"verdict={result.verdict} score={result.score:.2f} reasons={','.join(result.reasons) or '-'}")
