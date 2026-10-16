@@ -4,10 +4,15 @@ Compares keyword-only vs heuristics (vs heuristics+classifier if `transformers` 
 import csv
 import re
 import sys
+from pathlib import Path
 from tripwire import classifier
 from tripwire.scan import scan
 
-rows = list(csv.DictReader(open("eval/testset.csv", encoding="utf-8")))
+sys.stdout.reconfigure(errors="backslashreplace")
+
+EVAL_DIR = Path(__file__).resolve().parent
+with (EVAL_DIR / "testset.csv").open(encoding="utf-8", newline="") as testset:
+    rows = list(csv.DictReader(testset))
 KEYWORD = re.compile(r"ignore (all )?(previous|prior) instructions", re.I)
 
 systems = {
@@ -48,7 +53,7 @@ for t in false_pos:
     print("  -", t)
 
 if "--markdown" in sys.argv:
-    with open("eval/RESULTS.md", "w", encoding="utf-8") as f:
+    with (EVAL_DIR / "RESULTS.md").open("w", encoding="utf-8", newline="\n") as f:
         f.write(f"# Evaluation results\n\n{len(rows)} test strings (`eval/testset.csv`).\n\n{table}\n\n")
         f.write(f"## Missed attacks ({best_name})\n" + "".join(f"- {t}\n" for t in missed) or "")
         f.write(f"\n## False positives ({best_name})\n" + "".join(f"- {t}\n" for t in false_pos))
